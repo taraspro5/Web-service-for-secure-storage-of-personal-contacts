@@ -38,7 +38,7 @@ const ContactSchema = Yup.object().shape({
   email: Yup.string()
     .email("Nieprawidłowy adres e-mail")
     .matches(
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
       "Nieprawidłowy adres e-mail"
     )
     .required("Pole obowiązkowe"),
