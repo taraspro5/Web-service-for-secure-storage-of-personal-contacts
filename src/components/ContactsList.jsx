@@ -53,7 +53,7 @@ export const ContactsList = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [formValues, setFormValues] = useState({
+  const [_, setFormValues] = useState({
     name: "",
     email: "",
     phone: "",

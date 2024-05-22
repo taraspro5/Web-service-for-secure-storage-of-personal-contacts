@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { addContact } from "../redux/contactsOperation";
-import { useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
@@ -26,7 +25,6 @@ const ContactSchema = Yup.object().shape({
 
 export const AddContactForm = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const error = useSelector((state) => state.contacts.error);
   const contactsPhones = useSelector((state) => state.contacts.items);
 
@@ -42,7 +40,7 @@ export const AddContactForm = () => {
     if (isContactInBook) {
       alert(`${values.phone} juz masz w kontaktach`);
     } else {
-      const result = await dispatch(addContact(values));
+      await dispatch(addContact(values));
     }
     setSubmitting(false);
   };
