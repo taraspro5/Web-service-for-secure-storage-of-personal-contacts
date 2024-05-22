@@ -53,7 +53,7 @@ export const ContactsList = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [open, setOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [_, setFormValues] = useState({
+  const [formValues, setFormValues] = useState({
     name: "",
     email: "",
     phone: "",
@@ -245,11 +245,7 @@ export const ContactsList = () => {
           <DialogContent>
             {isEditing ? (
               <Formik
-                initialValues={{
-                  name: selectedContact.name,
-                  email: selectedContact.email,
-                  phone: selectedContact.phone,
-                }}
+                initialValues={formValues}
                 validationSchema={ContactSchema}
                 onSubmit={handleSave}
               >
@@ -282,7 +278,7 @@ export const ContactsList = () => {
                     />
                     <PhoneInput
                       country={"ua"}
-                      value={selectedContact.phone}
+                      value={formValues.phone}
                       onChange={(phone) => setFieldValue("phone", phone)}
                       inputStyle={{ width: "100%" }}
                     />
