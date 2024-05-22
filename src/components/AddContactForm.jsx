@@ -5,6 +5,8 @@ import { TextField, Button, Box, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { addContact } from "../redux/contactsOperation";
 import { useNavigate } from "react-router-dom";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const ContactSchema = Yup.object().shape({
   name: Yup.string()
@@ -37,14 +39,10 @@ export const AddContactForm = () => {
     const isContactInBook = contactsPhones.find(
       (contact) => contact.phone === values.phone
     );
-    console.log(values);
-    console.log(isContactInBook);
-    console.log(contactsPhones);
     if (isContactInBook) {
       alert(`${values.phone} juz masz w kontaktach`);
     } else {
-      // const result = await dispatch(addContact(values));
-      // console.log(result);
+      const result = await dispatch(addContact(values));
     }
     setSubmitting(false);
   };
@@ -63,7 +61,7 @@ export const AddContactForm = () => {
         validationSchema={ContactSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, touched, isSubmitting }) => (
+        {({ errors, touched, isSubmitting, setFieldValue }) => (
           <Form style={{ width: "100%", maxWidth: 360 }}>
             {error === "Rejected" && (
               <Typography color="error" variant="body2">
@@ -90,22 +88,24 @@ export const AddContactForm = () => {
               helperText={touched.email && errors.email}
               margin="normal"
             />
-            <Field
-              as={TextField}
-              name="phone"
-              type="text"
-              label="Telefon*"
-              fullWidth
-              error={touched.phone && !!errors.phone}
-              helperText={touched.phone && errors.phone}
-              margin="normal"
+            <PhoneInput
+              country={"ua"}
+              value={initialValues.phone}
+              onChange={(phone) => setFieldValue("phone", phone)}
+              inputStyle={{ width: "100%" }}
             />
+            {touched.phone && errors.phone && (
+              <Typography color="error" variant="body2">
+                {errors.phone}
+              </Typography>
+            )}
             <Button
               type="submit"
               fullWidth
               variant="contained"
               color="secondary"
               disabled={isSubmitting}
+              sx={{ mt: 2 }}
             >
               Dodac nowy kontakt
             </Button>

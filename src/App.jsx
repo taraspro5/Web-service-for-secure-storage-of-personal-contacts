@@ -10,6 +10,8 @@ import { SignupPage } from "./pages/SignupPage";
 import { SigninPage } from "./pages/SigninPage";
 import { RestrictedRoute } from "./components/RestrictedRoute";
 import { PrivateRoute } from "./components/PrivateRoute";
+import { LoaderRefreshing } from "./components/LoaderRefreshing";
+import { NotFoundPage } from "./components/NotFoundPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,7 +22,7 @@ function App() {
   }, [dispatch]);
 
   return isRefreshing ? (
-    <b>Refreshing user...</b>
+    <LoaderRefreshing />
   ) : (
     <Routes>
       <Route path="/" element={<WelcomePage />} />
@@ -42,6 +44,7 @@ function App() {
           <RestrictedRoute redirectTo="/dashboard" component={<SigninPage />} />
         }
       />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

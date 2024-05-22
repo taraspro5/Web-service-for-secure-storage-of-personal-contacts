@@ -41,9 +41,13 @@ export const deleteContact = createAsyncThunk(
 
 export const updateContact = createAsyncThunk(
   "contacts/updateContact",
-  async ({ id, updateContact }, { rejectWithValue }) => {
+  async ({ id, name, email, phone }, { rejectWithValue }) => {
     try {
-      const result = await axios.put(`/api/contacts/${id}`, updateContact);
+      const result = await axios.put(`/api/contacts/${id}`, {
+        name,
+        email,
+        phone,
+      });
       return result.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -55,10 +59,9 @@ export const updateContactStatusFavorite = createAsyncThunk(
   "contacts/updateContactStatusFavorite",
   async ({ id, favorite }, { rejectWithValue }) => {
     try {
-      const result = await axios.patch(
-        `/api/contacts/${id}/favorite`,
-        favorite
-      );
+      const result = await axios.patch(`/api/contacts/${id}/favorite`, {
+        favorite: !favorite,
+      });
       return result.data;
     } catch (error) {
       return rejectWithValue(error.message);

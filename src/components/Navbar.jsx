@@ -24,7 +24,7 @@ const authPages = [
 ];
 const dashboard = [{ name: "Dashboard", path: "/dashboard" }];
 // User settings
-const settings = ["Profile", "Logout"];
+const settings = ["Logout"];
 
 export const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
