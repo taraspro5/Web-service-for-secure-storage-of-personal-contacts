@@ -11,7 +11,7 @@ import { SigninPage } from "./pages/SigninPage";
 import { RestrictedRoute } from "./components/RestrictedRoute";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { LoaderRefreshing } from "./components/LoaderRefreshing";
-import { NotFoundPage } from "./components/NotFoundPage";
+import { NotFoundPage } from "./pages/NotFoundPage";
 
 function App() {
   const dispatch = useDispatch();
