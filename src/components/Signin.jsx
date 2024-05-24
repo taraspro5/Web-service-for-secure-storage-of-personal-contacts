@@ -36,7 +36,6 @@ export const Signin = () => {
     { setSubmitting, setFieldError, resetForm }
   ) => {
     const result = await dispatch(logIn(values));
-    console.log(result.payload.message);
     setSubmitting(false);
     if (result.meta.requestStatus === "fulfilled") {
       navigate("/");
