@@ -154,27 +154,27 @@ export const ContactsList = () => {
       <Typography variant="h4" gutterBottom align="center">
         Twoje kontakty
       </Typography>
+      <Box sx={{ width: "100%", maxWidth: 600, mb: 2 }}>
+        <TextField
+          label="Poszukiwanie za numerem telefonu"
+          variant="outlined"
+          value={filter}
+          onChange={handleFilterChange}
+          fullWidth
+          margin="normal"
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={showFavorites}
+              onChange={handleShowFavoritesContacts}
+            />
+          }
+          label="Pokaż tylko ulubione"
+        />
+      </Box>
       {filteredItems.length > 0 ? (
         <>
-          <Box sx={{ width: "100%", maxWidth: 600, mb: 2 }}>
-            <TextField
-              label="Poszukiwanie za numerem telefonu"
-              variant="outlined"
-              value={filter}
-              onChange={handleFilterChange}
-              fullWidth
-              margin="normal"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={showFavorites}
-                  onChange={handleShowFavoritesContacts}
-                />
-              }
-              label="Pokaż tylko ulubione"
-            />
-          </Box>
           <List sx={{ width: "100%", maxWidth: 600 }}>
             {filteredItems.map((contact) => (
               <ListItem
@@ -217,21 +217,20 @@ export const ContactsList = () => {
             ))}
           </List>
         </>
+      ) : showFavorites && filter.length > 0 ? (
+        <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+          Nie znaleziono kontaktów za takim wyszukiwaniem 😢
+        </Typography>
       ) : showFavorites ? (
         <>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={showFavorites}
-                onChange={handleShowFavoritesContacts}
-              />
-            }
-            label="Pokaż tylko ulubione"
-          />
           <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
             Jeszcze nie masz ulubionych kontaktow 😢
           </Typography>
         </>
+      ) : filter.length > 0 ? (
+        <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+          Nie znaleziono kontaktów za takim wyszukiwaniem 😢
+        </Typography>
       ) : (
         <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
           Jeszcze nie masz kontaktow 😢
