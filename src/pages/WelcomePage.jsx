@@ -1,8 +1,9 @@
-import { Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { Layout } from "../components/Layout";
 import { Navbar } from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Footer } from "../components/Footer";
 
 export function WelcomePage() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export function WelcomePage() {
   };
 
   return (
-    <>
+    <Box display="flex" flexDirection="column" minHeight="100vh">
       <Navbar />
       <Layout>
         <Typography
@@ -60,6 +61,7 @@ export function WelcomePage() {
           </div>
         )}
       </Layout>
-    </>
+      <Footer />
+    </Box>
   );
 }

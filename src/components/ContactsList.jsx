@@ -8,44 +8,19 @@ import {
 } from "../redux/contactsOperation";
 import {
   List,
-  ListItem,
-  ListItemText,
   Typography,
   Box,
   CircularProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   TextField,
-  DialogContentText,
-  DialogActions,
-  Button,
   FormControlLabel,
   Checkbox,
-  IconButton,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-
-const ContactSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(2, "Imie musi miec co najmniej 2 symbola")
-    .required("Pole obowiązkowe"),
-  email: Yup.string()
-    .email("Nieprawidłowy adres e-mail")
-    .matches(
-      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-      "Nieprawidłowy adres e-mail"
-    )
-    .required("Pole obowiązkowe"),
-  phone: Yup.string()
-    .matches(/^\+?[1-9]\d{1,14}$/, "Nieprawidlowy numer telefonu")
-    .required("Pole obowiązkowe"),
-});
+import { ContactItem } from "./ContactItem";
+import { ContactDialog } from "./ContactDialog";
 
 export const ContactsList = () => {
   const dispatch = useDispatch();
@@ -59,6 +34,7 @@ export const ContactsList = () => {
     phone: "",
   });
   const [filter, setFilter] = useState("");
+  const [filterType, setFilterType] = useState("phone");
   const [showFavorites, setShowFavorites] = useState(false);
 
   useEffect(() => {
@@ -66,7 +42,6 @@ export const ContactsList = () => {
   }, [dispatch]);
 
   const handleContactClick = (contact) => {
-    console.log(contact);
     if (!contact) return;
 
     setSelectedContact(contact);
@@ -88,7 +63,7 @@ export const ContactsList = () => {
     setIsEditing((prev) => !prev);
   };
 
-  const handleSave = async (values) => {
+  const handleSave = (values) => {
     const updatedContact = {
       id: selectedContact._id,
       name: values.name,
@@ -100,7 +75,6 @@ export const ContactsList = () => {
   };
 
   const handleDelete = () => {
-    console.log(selectedContact._id);
     dispatch(deleteContact(selectedContact._id));
     handleClose();
   };
@@ -109,8 +83,20 @@ export const ContactsList = () => {
     setFilter(e.target.value);
   };
 
+  const handleFilterTypeChange = (e) => {
+    setFilterType(e.target.value);
+  };
+
   const filteredItems = items
-    .filter((contact) => contact.phone.includes(filter))
+    .filter((contact) => {
+      if (filterType === "name") {
+        return contact.name.toLowerCase().includes(filter.toLowerCase());
+      } else if (filterType === "email") {
+        return contact.email.toLowerCase().includes(filter.toLowerCase());
+      } else {
+        return contact.phone.includes(filter);
+      }
+    })
     .filter((contact) => (showFavorites ? contact.favorite : true));
 
   const handleFavoriteToggle = (contact) => {
@@ -118,7 +104,6 @@ export const ContactsList = () => {
       id: contact._id,
       favorite: contact.favorite,
     };
-    console.log(updatedFavorite);
     dispatch(updateContactStatusFavorite(updatedFavorite));
   };
 
@@ -155,8 +140,21 @@ export const ContactsList = () => {
         Twoje kontakty
       </Typography>
       <Box sx={{ width: "100%", maxWidth: 600, mb: 2 }}>
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="filter-type-label">Typ filtracji</InputLabel>
+          <Select
+            labelId="filter-type-label"
+            value={filterType}
+            onChange={handleFilterTypeChange}
+            label="Typ filtracji"
+          >
+            <MenuItem value="name">Imię</MenuItem>
+            <MenuItem value="email">Email</MenuItem>
+            <MenuItem value="phone">Telefon</MenuItem>
+          </Select>
+        </FormControl>
         <TextField
-          label="Poszukiwanie za numerem telefonu"
+          label={`Poszukiwanie za ${filterType}`}
           variant="outlined"
           value={filter}
           onChange={handleFilterChange}
@@ -174,59 +172,24 @@ export const ContactsList = () => {
         />
       </Box>
       {filteredItems.length > 0 ? (
-        <>
-          <List sx={{ width: "100%", maxWidth: 600 }}>
-            {filteredItems.map((contact) => (
-              <ListItem
-                button
-                key={contact._id}
-                onClick={() => handleContactClick(contact)}
-              >
-                <ListItemText
-                  primary={
-                    <Box display="flex" alignItems="center">
-                      <PhoneInput
-                        country={"ua"}
-                        value={contact.phone}
-                        inputProps={{ readOnly: true }}
-                        buttonStyle={{ pointerEvents: "none" }}
-                        containerStyle={{ width: "auto" }}
-                        inputStyle={{
-                          border: "none",
-                          backgroundColor: "transparent",
-                          pointerEvents: "none",
-                        }}
-                      />
-                    </Box>
-                  }
-                  secondary={`Imie: ${contact.name} | Email: ${contact.email}`}
-                />
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleFavoriteToggle(contact);
-                  }}
-                >
-                  {contact.favorite ? (
-                    <FavoriteIcon color="error" />
-                  ) : (
-                    <FavoriteBorderIcon />
-                  )}
-                </IconButton>
-              </ListItem>
-            ))}
-          </List>
-        </>
+        <List sx={{ width: "100%", maxWidth: 600 }}>
+          {filteredItems.map((contact) => (
+            <ContactItem
+              key={contact._id}
+              contact={contact}
+              onClick={handleContactClick}
+              onFavoriteToggle={handleFavoriteToggle}
+            />
+          ))}
+        </List>
       ) : showFavorites && filter.length > 0 ? (
         <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
           Nie znaleziono kontaktów za takim wyszukiwaniem 😢
         </Typography>
       ) : showFavorites ? (
-        <>
-          <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
-            Jeszcze nie masz ulubionych kontaktow 😢
-          </Typography>
-        </>
+        <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+          Jeszcze nie masz ulubionych kontaktow 😢
+        </Typography>
       ) : filter.length > 0 ? (
         <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
           Nie znaleziono kontaktów za takim wyszukiwaniem 😢
@@ -237,100 +200,17 @@ export const ContactsList = () => {
         </Typography>
       )}
       {selectedContact && (
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>
-            {isEditing ? "Edytuj kontakt" : "Informacje o kontakcie"}
-          </DialogTitle>
-          <DialogContent>
-            {isEditing ? (
-              <Formik
-                initialValues={formValues}
-                validationSchema={ContactSchema}
-                onSubmit={handleSave}
-              >
-                {({ isSubmitting, setFieldValue }) => (
-                  <Form>
-                    <Field
-                      as={TextField}
-                      name="name"
-                      label="Imie"
-                      fullWidth
-                      margin="dense"
-                    />
-                    <ErrorMessage
-                      name="name"
-                      component="div"
-                      style={{ color: "red" }}
-                    />
-                    <Field
-                      as={TextField}
-                      name="email"
-                      label="Email"
-                      type="email"
-                      fullWidth
-                      margin="dense"
-                    />
-                    <ErrorMessage
-                      name="email"
-                      component="div"
-                      style={{ color: "red" }}
-                    />
-                    <PhoneInput
-                      country={"ua"}
-                      value={formValues.phone}
-                      onChange={(phone) => setFieldValue("phone", phone)}
-                      inputStyle={{ width: "100%" }}
-                    />
-                    <ErrorMessage
-                      name="phone"
-                      component="div"
-                      style={{ color: "red" }}
-                    />
-                    <DialogActions>
-                      <Button
-                        type="submit"
-                        color="primary"
-                        disabled={isSubmitting}
-                      >
-                        Zapisz
-                      </Button>
-                      <Button onClick={handleClose} color="primary">
-                        Zamknij
-                      </Button>
-                    </DialogActions>
-                  </Form>
-                )}
-              </Formik>
-            ) : (
-              <>
-                <DialogContentText>
-                  <strong>Imię:</strong> {selectedContact.name}
-                </DialogContentText>
-                <DialogContentText>
-                  <strong>Email:</strong> {selectedContact.email}
-                </DialogContentText>
-                <DialogContentText>
-                  <strong>Telefon:</strong> {selectedContact.phone}
-                </DialogContentText>
-              </>
-            )}
-          </DialogContent>
-          <DialogActions>
-            {!isEditing && (
-              <>
-                <Button onClick={handleEditToggle} color="primary">
-                  Zmien dane
-                </Button>
-                <Button onClick={handleDelete} color="secondary">
-                  Usunac kontakt
-                </Button>
-                <Button onClick={handleClose} color="primary">
-                  Zamknij
-                </Button>
-              </>
-            )}
-          </DialogActions>
-        </Dialog>
+        <ContactDialog
+          open={open}
+          onClose={handleClose}
+          isEditing={isEditing}
+          contact={selectedContact}
+          formValues={formValues}
+          setFormValues={setFormValues}
+          onSave={handleSave}
+          onDelete={handleDelete}
+          onEditToggle={handleEditToggle}
+        />
       )}
     </Box>
   );
