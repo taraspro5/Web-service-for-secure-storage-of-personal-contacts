@@ -22,8 +22,7 @@ export const Footer = () => {
         Katolicki Uniwersytet Lubelski Jana Pawła II
       </Typography>
       <Typography variant="body1">Informatyka I stopnia</Typography>
-      <Typography variant="body1">Taras Kovtun</Typography>
-      <Typography variant="body1">2024</Typography>
+      <Typography variant="body1">Taras Kovtun 2024</Typography>
     </Box>
   );
 };
