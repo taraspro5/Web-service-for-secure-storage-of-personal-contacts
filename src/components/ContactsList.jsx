@@ -183,19 +183,19 @@ export const ContactsList = () => {
           ))}
         </List>
       ) : showFavorites && filter.length > 0 ? (
-        <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+        <Typography variant="body1" color="textSecondary" sx={{ mt: 2, mb: 4 }}>
           Nie znaleziono kontaktów za takim wyszukiwaniem 😢
         </Typography>
       ) : showFavorites ? (
-        <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+        <Typography variant="body1" color="textSecondary" sx={{ mt: 2, mb: 4 }}>
           Jeszcze nie masz ulubionych kontaktow 😢
         </Typography>
       ) : filter.length > 0 ? (
-        <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+        <Typography variant="body1" color="textSecondary" sx={{ mt: 2, mb: 4 }}>
           Nie znaleziono kontaktów za takim wyszukiwaniem 😢
         </Typography>
       ) : (
-        <Typography variant="body1" color="textSecondary" sx={{ mt: 2 }}>
+        <Typography variant="body1" color="textSecondary" sx={{ mt: 2, mb: 4 }}>
           Jeszcze nie masz kontaktow 😢
         </Typography>
       )}
