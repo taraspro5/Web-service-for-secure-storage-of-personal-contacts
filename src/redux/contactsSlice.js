@@ -45,12 +45,9 @@ const contactsSlice = createSlice({
       })
       .addCase(updateContact.fulfilled, (state, action) => {
         state.isLoading = false;
-        const index = state.items.findIndex(
-          (contact) => contact.id === action.payload.id
+        state.items = state.items.map((contact) =>
+          contact._id === action.payload._id ? action.payload : contact
         );
-        if (index !== -1) {
-          state.items[index] = action.payload;
-        }
       })
       .addCase(updateContact.rejected, (state, action) => {
         state.isLoading = false;
